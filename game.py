@@ -21,28 +21,35 @@ while running:
     background.fill((255,0,0))
 
     # Load the Tiles
-    dirt_floor = pygame.image.load('tiny_dungeon/Tiles/tile_0000.png')     # tile_0000
-    stone_wall = pygame.image.load('tiny_dungeon/Tiles/tile_0014.png')
-    golem = pygame.image.load('tiny_dungeon/Tiles/tile_0020.png')
-    # pygame.transform.scale() to resize a tile
-    dirt_floor = pygame.transform.scale(dirt_floor, (32,32))
-    stone_wall = pygame.transform.scale(stone_wall, (32,32))
-    golem = pygame.transform.scale(stone_wall, (32,32))
+    grass = pygame.image.load('tiny_tanks/PNG/Tiles/tileGrass1.png')     # tile_0000
+    sand = pygame.image.load('tiny_tanks/PNG/Tiles/tileSand1.png')
+    grass_and_sand = pygame.image.load('tiny_tanks/PNG/Tiles/tileGrass_transitionW.png')
+    sand_road_horizontal = pygame.image.load('tiny_tanks/PNG/Tiles/tileSand_roadEast.png')
+    sand_road_vertical = pygame.image.load('tiny_tanks/PNG/Tiles/tileSand_roadNorth.png')
+    grass_road_horizontal = pygame.image.load('tiny_tanks/PNG/Tiles/tileGrass_roadEast.png')
+    grass_road_vertical = pygame.image.load('tiny_tanks/PNG/Tiles/tileGrass_roadNorth.png')
+    grass_and_sand_road_horizontal = pygame.image.load('tiny_tanks/PNG/Tiles/tileGrass_roadTransitionW.png')
+    
     # Create the background
     # Get to the tile_size
-    TILE_SIZE = dirt_floor.get_width()
+    TILE_SIZE = grass.get_width()
 
     # loop over x direction
     for x in range(0,WIDTH,TILE_SIZE):
         # loop over y direction
         for y in range(0,HEIGHT, TILE_SIZE):
             # blit the tile to our BG
-            background.blit(dirt_floor, (x,y))
-            if x<TILE_SIZE:
-                background.blit(stone_wall, (x,y))
-            #elif x<(2*TILE_SIZE):
-               #background.blit(golem, (x,y))
-
+            background.blit(grass, (x,y))
+            if x == 1/2*WIDTH-64:
+                background.blit(grass_and_sand, (x,y))
+            elif x < 1/2*WIDTH:
+                background.blit(sand, (x,y))
+    for x in range(0, WIDTH//2-64):
+        background.blit(sand_road_horizontal, (x,360))
+    background.blit(grass_and_sand_road_horizontal, (x,360))
+    for x in range(0, WIDTH):
+        if x > WIDTH//2-2:
+            background.blit(grass_road_horizontal, (x,360))
     # RENDER YOUR GAME HERE
     
     # Blit the background to the screen
