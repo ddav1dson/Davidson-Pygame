@@ -1,6 +1,7 @@
 # Example file showing a basic pygame "game loop"
 import pygame
-
+from helpers import build_background
+from tank import Tank
 # pygame setup
 pygame.init()
 WIDTH = 1280
@@ -9,6 +10,14 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 running = True
 
+# get my background
+    
+    # create the tank
+player1 = Tank(200,200)
+
+background = build_background(WIDTH, HEIGHT)
+
+# Render your game here
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
@@ -16,60 +25,22 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    # Create the Background
-    background = pygame.Surface((WIDTH,HEIGHT))
-    background.fill((255,0,0))
-
-    # Load the Tiles
-    grass = pygame.image.load('tiny_tanks/PNG/Tiles/tileGrass1.png')
-    sand = pygame.image.load('tiny_tanks/PNG/Tiles/tileSand1.png')
-    grass_and_sand = pygame.image.load('tiny_tanks/PNG/Tiles/tileGrass_transitionW.png')
-    sand_road_horizontal = pygame.image.load('tiny_tanks/PNG/Tiles/tileSand_roadEast.png')
-    sand_road_vertical = pygame.image.load('tiny_tanks/PNG/Tiles/tileSand_roadNorth.png')
-    grass_road_horizontal = pygame.image.load('tiny_tanks/PNG/Tiles/tileGrass_roadEast.png')
-    grass_road_vertical = pygame.image.load('tiny_tanks/PNG/Tiles/tileGrass_roadNorth.png')
-    grass_and_sand_road_horizontal = pygame.image.load('tiny_tanks/PNG/Tiles/tileGrass_roadTransitionW.png')
-    
-    # Create the background
-    # Get to the tile_size
-    TILE_SIZE = grass.get_width()
-
-    # loop over x direction
-    for x in range(0,WIDTH,TILE_SIZE):
-        # loop over y direction
-        for y in range(0,HEIGHT, TILE_SIZE):
-            # blit the tile to our BG
-            background.blit(grass, (x,y))
-            if x == 1/2*WIDTH:
-                background.blit(grass_and_sand, (x,y))
-            elif x < 1/2*WIDTH:
-                background.blit(sand, (x,y))
-    for x in range(0, WIDTH//2):
-        background.blit(sand_road_horizontal, (x,360))
-    for x in range(0, WIDTH):
-        if x > WIDTH//2:
-            background.blit(grass_road_horizontal, (x,360))
-    
-    background.blit(grass_and_sand_road_horizontal, (640,360))
-
-    # RENDER YOUR GAME HERE
-    
-    # create the tank
-    red_tank = pygame.image.load('tiny_tanks/PNG/Tiles/tank_red.png')
-
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
-        red_tank.y -= 300 * dt
+        player1.y -= 300 * dt
     if keys[pygame.K_s]:
-        red_tank.y += 300 * dt
+        player1.y += 300 * dt
     if keys[pygame.K_a]:
-        red_tank.x -= 300 * dt
+        player1.x -= 300 * dt
     if keys[pygame.K_d]:
-        red_tank.x += 300 * dt
-    background.blit(red_tank, (x,y))
-    # Blit the background to the screen
-    screen.blit(background,(0,0))
+        player1.x += 300 * dt
 
+    player1.update()
+
+    # Blit the background to the screen
+    screen.blit(background,(0,0))   
+    
+    player1.draw(screen)
     # flip() the display to put your work on screen
     pygame.display.flip()
 
