@@ -25,15 +25,25 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+    acceleration = 0.5
+    max_speed = 3
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w]:
-        player1.y -= 300 * dt
-    if keys[pygame.K_s]:
-        player1.y += 300 * dt
+        player1.speed -= acceleration
+    elif keys[pygame.K_s]:
+        player1.speed += acceleration
+    else: 
+        player1.speed *= 0.5
+
+    if player1.speed > max_speed:
+        player1.speed = max_speed
+    if player1.speed < -max_speed:
+        player1.speed = -max_speed
+
     if keys[pygame.K_a]:
-        player1.x -= 300 * dt
+        player1.theta -= 150 * dt
     if keys[pygame.K_d]:
-        player1.x += 300 * dt
+        player1.theta += 150 * dt
 
     player1.update()
 

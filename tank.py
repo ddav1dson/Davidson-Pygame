@@ -2,7 +2,7 @@ from math import cos, sin, pi
 import pygame
 
 class Tank():
-    def __init__(self, x, y, theta=270, color='red'):
+    def __init__(self, x, y, theta=180, color='red'):
         self.x = x
         self.y = y
         self.speed = 0
