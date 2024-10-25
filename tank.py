@@ -17,7 +17,7 @@ class Tank():
     def update(self):
         # moves our ship at each frame
         # get x and y components of speed
-        theta_rad = self.deg_to_rad(self.theta)
+        theta_rad = self.deg_to_rad(self.theta + 90)
         x_dot = cos(theta_rad) * self.speed
         y_dot = sin(theta_rad) * self.speed
 

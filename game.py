@@ -33,7 +33,7 @@ while running:
     elif keys[pygame.K_s]:
         player1.speed += acceleration
     else: 
-        player1.speed *= 0.5
+        player1.speed *= 0.7
 
     if player1.speed > max_speed:
         player1.speed = max_speed
@@ -41,9 +41,9 @@ while running:
         player1.speed = -max_speed
 
     if keys[pygame.K_a]:
-        player1.theta -= 150 * dt
-    if keys[pygame.K_d]:
         player1.theta += 150 * dt
+    if keys[pygame.K_d]:
+        player1.theta -= 150 * dt
 
     player1.update()
 
