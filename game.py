@@ -9,11 +9,9 @@ HEIGHT = 720
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 running = True
-
-# get my background
     
-    # create the tank
-player1 = Tank(200,200)
+# create the tank
+player1 = Tank(200,200, WIDTH, HEIGHT)
 
 background = build_background(WIDTH, HEIGHT)
 
@@ -25,27 +23,9 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    acceleration = 0.5
-    max_speed = 3
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_w]:
-        player1.speed -= acceleration
-    elif keys[pygame.K_s]:
-        player1.speed += acceleration
-    else: 
-        player1.speed *= 0.7
-
-    if player1.speed > max_speed:
-        player1.speed = max_speed
-    if player1.speed < -max_speed:
-        player1.speed = -max_speed
-
-    if keys[pygame.K_a]:
-        player1.theta += 150 * dt
-    if keys[pygame.K_d]:
-        player1.theta -= 150 * dt
-
+    
     player1.update()
+    player1.check_keys()
 
     # Blit the background to the screen
     screen.blit(background,(0,0))   
