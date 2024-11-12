@@ -59,7 +59,8 @@ class Tank(pygame.sprite.Sprite):
 
         # check for space bar to shoot
         if keys[pygame.K_SPACE]:
-            self.shoot()
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            self.shoot(mouse_x, mouse_y)
     
 
 
@@ -120,8 +121,11 @@ class Tank(pygame.sprite.Sprite):
 
         # Recalculate the rect for the rotated turret to position it correctly
         self.turrent_rect = self.turrent_image.get_rect(center=self.rect.center)
-
-    def shoot(self):
-        b = Bullet(self.screen, self, self.x, self.y, self.theta)
+    
+    def shoot(self, mouse_x, mouse_y):
+        dx = mouse_x - self.rect.centerx
+        dy = mouse_y - self.rect.centery
+        angle = degrees(atan2(dy, dx))  # atan2 returns angle in radians
+        b = Bullet(self.screen, self, self.x, self.y, -angle)
         # put the bullet in a group
         self.bullet_group.add(b)

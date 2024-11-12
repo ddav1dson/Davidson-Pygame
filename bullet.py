@@ -1,7 +1,7 @@
 import pygame
 from math import sin, cos, radians
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, screen,mom, x,y,theta,speed = 5):
+    def __init__(self, screen,mom, x,y,theta,speed = 10):
         pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
