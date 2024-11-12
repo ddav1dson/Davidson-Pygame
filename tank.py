@@ -1,48 +1,69 @@
-from math import cos, sin, pi
+from math import cos, sin, pi, degrees, radians, atan2
 import pygame
+from bullet import Bullet
 
-class Tank():
-    def __init__(self, x, y, WIDTH, HEIGHT, theta=180, color='red'):
+class Tank(pygame.sprite.Sprite):
+    def __init__(self, screen, x, y, WIDTH, HEIGHT, bullet_group, theta=180, color='red'):
+        pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
         self.speed = 0
         self.theta = theta # degrees
-        self.orig_image = pygame.image.load('tiny_tanks/PNG/Tiles/tank_red.png')
+        # self.orig_image = pygame.image.load('tiny_tanks/PNG/Tiles/tank_red.png')
+        self.color = color
+        if color == 'red':
+            self.orig_image = pygame.image.load('tiny_tanks/PNG/Tiles/tankBody_red.png')
+            self.orig_turrent = pygame.image.load('tiny_tanks/PNG/Tiles/tankRed_barrel1.png')
+        else:
+            self.orig_image = pygame.image.load('tiny_tanks/PNG/Tiles/tank_huge.png')
+            self.orig_turrent = pygame.image.load('tiny_tanks/PNG/Tiles/tankRed_barrel1.png')
         self.image = self.orig_image
+        self.turrent_image = self.orig_turrent
         self.rect = self.image.get_rect()
+        self.turrent_rect = self.turrent_image.get_rect()
         self.rect.center = (self.x, self.y)
         self.screen_w = WIDTH
         self.screen_h = HEIGHT
-        self.border = 15
-    
+        self.border = 15 # A margin representing the distance to the edge of the screen. 
+        # self.bullet = pygame.image.load('tiny_tanks/PNG/Tiles/bulletRed3_outline.png')
+        self.reverse_time = pygame.time.get_ticks()
+        self.screen = screen
+        self.bullet_group = bullet_group
+
     def deg_to_rad(self, deg):
         # converts deg to rad
         rad = (deg/180) * pi
         return rad
 
     def check_keys(self):
-        acceleration = 0.5
+        acceleration = 0.3
         max_speed = 3
         keys = pygame.key.get_pressed()
+        # moves the tank forward and backward
         if keys[pygame.K_w]:
             self.speed -= acceleration
         elif keys[pygame.K_s]:
             self.speed += acceleration
         else: 
             self.speed *= 0.7
-
+        # keeps tank to the max speed
         if self.speed > max_speed:
             self.speed = max_speed
         if self.speed < -max_speed:
             self.speed = -max_speed
-
+        # keys to turn the tank left or right
         if keys[pygame.K_a]:
             self.theta += 1.5
         if keys[pygame.K_d]:
             self.theta -= 1.5
 
-    def check_border(self):
-    # check the border and set speed to 0, if we hit it
+        # check for space bar to shoot
+        if keys[pygame.K_SPACE]:
+            self.shoot()
+    
+
+
+    def check_border(self):    
         # Stop the tank when hitting the left wall
         if self.x < self.border:
             self.x = self.border
@@ -63,9 +84,10 @@ class Tank():
     
 
     def update(self):
-        self.check_keys()
+        if self.color =='red':   
+            self.check_keys() # only red is influenced by keys
         self.check_border()
-        # moves our ship at each frame
+        # moves our tank at each frame
         # get x and y components of speed
         theta_rad = self.deg_to_rad(self.theta + 90)
         x_dot = cos(theta_rad) * self.speed
@@ -74,15 +96,32 @@ class Tank():
         self.x += x_dot
         self.y -= y_dot
         self.rect.center = self.x,self.y
-        #update rectangle
-        
+        # rotate the image and draw new rectangle
+        self.image = pygame.transform.rotozoom(self.orig_image, self.theta, 1)
+        self.turrent_image = pygame.transform.rotozoom(self.orig_turrent, self.theta, 1)
 
-
-    
     def draw(self, screen):
+        # Draw the tank body (fixed)
         rotated_image = pygame.transform.rotate(self.orig_image, self.theta)
-        # Get the new rect for the rotated image and set its center to the original rect center
         new_rect = rotated_image.get_rect(center=self.rect.center)
-        # Draw the rotated image at the center
         screen.blit(rotated_image, new_rect.topleft)
-        
+
+        # Draw the rotated turret
+        screen.blit(self.turrent_image, self.turrent_rect.topleft)
+
+    def rotate_turret(self, mouse_x, mouse_y):
+        # Calculate the angle to the mouse cursor
+        dx = mouse_x - self.rect.centerx
+        dy = mouse_y - self.rect.centery
+        angle = degrees(atan2(dy, dx))  # atan2 returns angle in radians
+
+          # Rotate the turret by the calculated angle
+        self.turrent_image = pygame.transform.rotate(self.orig_turrent, -angle + 90)
+
+        # Recalculate the rect for the rotated turret to position it correctly
+        self.turrent_rect = self.turrent_image.get_rect(center=self.rect.center)
+
+    def shoot(self):
+        b = Bullet(self.screen, self, self.x, self.y, self.theta)
+        # put the bullet in a group
+        self.bullet_group.add(b)
