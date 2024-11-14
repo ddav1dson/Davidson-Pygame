@@ -29,6 +29,8 @@ class Tank(pygame.sprite.Sprite):
         self.reverse_time = pygame.time.get_ticks()
         self.screen = screen
         self.bullet_group = bullet_group
+        self.reload_time = 0
+        self.reload_wait = 1000
 
     def deg_to_rad(self, deg):
         # converts deg to rad
@@ -123,9 +125,12 @@ class Tank(pygame.sprite.Sprite):
         self.turrent_rect = self.turrent_image.get_rect(center=self.rect.center)
     
     def shoot(self, mouse_x, mouse_y):
-        dx = mouse_x - self.rect.centerx
-        dy = mouse_y - self.rect.centery
-        angle = degrees(atan2(dy, dx))  # atan2 returns angle in radians
-        b = Bullet(self.screen, self, self.x, self.y, -angle)
-        # put the bullet in a group
-        self.bullet_group.add(b)
+       # only shoot if the time has elapsed
+        if pygame.time.get_ticks() - self.reload_time > self.reload_wait:
+            self.reload_time = pygame.time.get_ticks()
+            dx = mouse_x - self.rect.centerx
+            dy = mouse_y - self.rect.centery
+            angle = degrees(atan2(dy, dx))  # atan2 returns angle in radians
+            b = Bullet(self.screen, self, self.x, self.y, -angle)
+            # put the bullet in a group
+            self.bullet_group.add(b)
