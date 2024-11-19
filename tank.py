@@ -32,17 +32,6 @@ class Tank(pygame.sprite.Sprite):
         self.reload_time = 0
         self.reload_wait = 1000
 
-    def draw(self, screen):
-        # if self.color == 'red':
-        print("drawing tank")
-        # Draw the tank body (fixed)
-        rotated_image = pygame.transform.rotate(self.orig_image, self.theta)
-        rect = rotated_image.get_rect(center=self.rect.center)
-        screen.blit(rotated_image, rect.topleft)
-
-        # Draw the rotated turret
-        screen.blit(self.turrent_image, self.turrent_rect.topleft)
-
     def deg_to_rad(self, deg):
         # converts deg to rad
         rad = (deg/180) * pi
@@ -95,20 +84,20 @@ class Tank(pygame.sprite.Sprite):
             self.y = self.screen_h - self.border
             self.speed = 0 
 
-    
+    # def draw(self, screen):
+    #     # if self.color == 'red':
+    #     print("drawing tank")
+    #     # Draw the tank body (fixed)
+    #     rotated_image = pygame.transform.rotate(self.orig_image, self.theta)
+    #     rect = rotated_image.get_rect(center=self.rect.center)
+    #     screen.blit(rotated_image, rect.topleft)
+
+        # Draw the rotated turret
+        #screen.blit(self.turrent_image, self.turrent_rect.topleft)
 
     def update(self):
         mouse_x, mouse_y = pygame.mouse.get_pos()
-        if self.color =='red':
-    
-            self.check_keys() # only red is influenced by keys
-            
-            # rotate the player's tank and turrent
-            self.image = pygame.transform.rotozoom(self.orig_image, self.theta, 1)
-            self.turrent_image = pygame.transform.rotozoom(self.orig_turrent, self.theta, 1)
-            self.rotate_turret(mouse_x, mouse_y)
-
-            
+                
         self.check_border()
         # moves our tank at each frame
         # get x and y components of speed
@@ -118,11 +107,35 @@ class Tank(pygame.sprite.Sprite):
 
         self.x += x_dot
         self.y -= y_dot
-        self.rect.center = self.x,self.y
+        self.rect.center = (self.x,self.y)
+
+
+        # Draw the tank body (fixed)
+        # rotate the tank image to face the correct direction
+        rotated_image = pygame.transform.rotate(self.orig_image, self.theta)
+        # Get the rect for the rotated image and adjust position
+        self.rect = rotated_image.get_rect(center=self.rect.center)
+        #update the image to the rotated one
+        self.image = rotated_image
+      
+        # rotate the turrent image to face the correct direction
+        rotated_turrent_image = pygame.transform.rotate(self.orig_turrent, self.theta)
+        # Get the rect for the turrent image compared to the image of the tank
+        self.turrent_rect = rotated_turrent_image.get_rect(center =(self.rect.width//2, self.rect.height//2))
+        # update the image to the rotated one
+        self.turrent_image = rotated_turrent_image
+        
+        # blit the turret on the tank image
+
+        if self.color =='red':
+            self.check_keys() # only red is influenced by keys
+            self.image.blit(self.turrent_image, self.turrent_rect)
+            self.rotate_turret(mouse_x, mouse_y)
+    
+
     
 
     def rotate_turret(self, mouse_x, mouse_y):
-        mouse_x, mouse_y = pygame.mouse.get_pos()
         if self.color == 'red':
         # Calculate the angle to the mouse cursor
             dx = mouse_x - self.rect.centerx

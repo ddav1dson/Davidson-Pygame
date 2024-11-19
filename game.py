@@ -1,6 +1,7 @@
 import pygame
 from helpers import build_background
 from tank import Tank
+from bullet import Bullet
 # pygame setup
 pygame.init()
 WIDTH = 1280
@@ -33,15 +34,13 @@ while running:
         if event.type == pygame.QUIT:
             running = False
     #get the mouse position
-    mouse_x, mouse_y = pygame.mouse.get_pos()
+    #mouse_x, mouse_y = pygame.mouse.get_pos()
+    
     tank_group.update()
-    #player1.update()
-    player1.rotate_turret(mouse_x, mouse_y)
     bullet_group.update()
     
     # check for collision
-    has_collided = pygame.sprite.collide_rect(player1,enemy1)
-    
+    has_collided = pygame.sprite.collide_rect(player1, enemy1)
     if has_collided:
         enemy1.kill()
     
@@ -50,7 +49,7 @@ while running:
     # Blit the background to the screen
     screen.blit(background,(0,0))   
     tank_group.draw(screen)
-    player1.draw(screen)
+    
     bullet_group.draw(screen)
     # flip() the display to put your work on screen
     pygame.display.flip()
