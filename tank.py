@@ -119,25 +119,16 @@ class Tank(pygame.sprite.Sprite):
         self.image = rotated_image
       
         # rotate the turrent image to face the correct direction
-        rotated_turrent_image = pygame.transform.rotate(self.orig_turrent, self.theta)
-        # Get the rect for the turrent image compared to the image of the tank
-        self.turrent_rect = rotated_turrent_image.get_rect(center =(self.rect.width//2, self.rect.height//2))
-        # update the image to the rotated one
-        self.turrent_image = rotated_turrent_image
+        # rotated_turrent_image = pygame.transform.rotate(self.orig_turrent, self.theta)
+        # # Get the rect for the turrent image compared to the image of the tank
+        # self.turrent_rect = rotated_turrent_image.get_rect(center =(self.rect.width//2, self.rect.height//2))
+        # # update the image to the rotated one
+        # self.turrent_image = rotated_turrent_image
         
         # blit the turret on the tank image
 
         if self.color =='red':
             self.check_keys() # only red is influenced by keys
-            self.image.blit(self.turrent_image, self.turrent_rect)
-            self.rotate_turret(mouse_x, mouse_y)
-    
-
-    
-
-    def rotate_turret(self, mouse_x, mouse_y):
-        if self.color == 'red':
-        # Calculate the angle to the mouse cursor
             dx = mouse_x - self.rect.centerx
             dy = mouse_y - self.rect.centery
             angle = degrees(atan2(dy, dx))  # atan2 returns angle in radians, works from -pi to pi
@@ -146,9 +137,25 @@ class Tank(pygame.sprite.Sprite):
             self.turrent_image = pygame.transform.rotate(self.orig_turrent, -angle + 90)
 
             # Recalculate the rect for the rotated turret to position it correctly
-            self.turrent_rect = self.turrent_image.get_rect(center=self.rect.center)
-        else:
-            pass
+            self.turrent_rect = self.turrent_image.get_rect(center =(self.rect.width//2, self.rect.height//2))
+            self.image.blit(self.turrent_image, self.turrent_rect)
+
+    
+
+    # def rotate_turret(self, mouse_x, mouse_y):
+    #     if self.color == 'red':
+    #     # Calculate the angle to the mouse cursor
+    #         dx = mouse_x - self.rect.centerx
+    #         dy = mouse_y - self.rect.centery
+    #         angle = degrees(atan2(dy, dx))  # atan2 returns angle in radians, works from -pi to pi
+
+    #         # Rotate the turret by the calculated angle
+    #         self.turrent_image = pygame.transform.rotate(self.orig_turrent, -angle + 90)
+
+    #         # Recalculate the rect for the rotated turret to position it correctly
+    #         self.turrent_rect = self.turrent_image.get_rect(center=self.rect.center)
+    #     else:
+    #         pass
     
     def shoot(self, mouse_x, mouse_y):
        # only shoot if the time has elapsed
