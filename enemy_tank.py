@@ -1,16 +1,20 @@
 import pygame
 from tank import Tank
+from math import degrees, atan2, radians, cos, sin
 
 class EnemyTank(Tank):
-    def __init__(self, screen, x, y, WIDTH, HEIGHT, bullet_group, theta=180, color='red'):
-        super().__init__(screen, x, y, WIDTH, HEIGHT, bullet_group, theta=180, color)
+    def __init__(self, player, screen, x, y, WIDTH, HEIGHT, bullet_group, theta=180, color='red'):
+        super().__init__(screen, x, y, WIDTH, HEIGHT, bullet_group, theta=180, color = 'enemy')
+        self.player = player
     
-    def check_keys(self):
-        # overwrite old checl_keys and instead tank makes its own decision
+def track_player(self):
+        # overwriting checking keyboard and instead ship makes its own decisions
         # set the speed
-        self.speed = 3
-        
-        # get the postion of the player's tank
-        
-        # set the theta
+        self.speed = 1
+        # get the position of the player (lag)
+        delta_x = self.player.x - self.x
+        delta_y = self.player.y - self.y
+        # if delta is too small do nothing!
+        if delta_x**2 + delta_y**2 > 5:
+            self.theta = degrees(atan2(-delta_y,delta_x))
         

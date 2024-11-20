@@ -31,6 +31,10 @@ class Tank(pygame.sprite.Sprite):
         self.bullet_group = bullet_group
         self.reload_time = 0
         self.reload_wait = 1000
+        self.explosion_image = pygame.image.load('tiny_tanks/PNG/Retina/explosion2.png')
+        self.explosion_image = pygame.transform.scale_by(self.explosion_image, 3)
+        self.explosion_timer = 0
+        self.explosion_length = 750
 
     def deg_to_rad(self, deg):
         # converts deg to rad
@@ -84,32 +88,9 @@ class Tank(pygame.sprite.Sprite):
             self.y = self.screen_h - self.border
             self.speed = 0 
 
-    # def draw(self, screen):
-    #     # if self.color == 'red':
-    #     print("drawing tank")
-    #     # Draw the tank body (fixed)
-    #     rotated_image = pygame.transform.rotate(self.orig_image, self.theta)
-    #     rect = rotated_image.get_rect(center=self.rect.center)
-    #     screen.blit(rotated_image, rect.topleft)
-
-        # Draw the rotated turret
-        #screen.blit(self.turrent_image, self.turrent_rect.topleft)
-
     def update(self):
         mouse_x, mouse_y = pygame.mouse.get_pos()
-                
-        self.check_border()
-        # moves our tank at each frame
-        # get x and y components of speed
-        theta_rad = self.deg_to_rad(self.theta + 90)
-        x_dot = cos(theta_rad) * self.speed
-        y_dot = sin(theta_rad) * self.speed
-
-        self.x += x_dot
-        self.y -= y_dot
-        self.rect.center = (self.x,self.y)
-
-
+        
         # Draw the tank body (fixed)
         # rotate the tank image to face the correct direction
         rotated_image = pygame.transform.rotate(self.orig_image, self.theta)
@@ -117,15 +98,6 @@ class Tank(pygame.sprite.Sprite):
         self.rect = rotated_image.get_rect(center=self.rect.center)
         #update the image to the rotated one
         self.image = rotated_image
-      
-        # rotate the turrent image to face the correct direction
-        # rotated_turrent_image = pygame.transform.rotate(self.orig_turrent, self.theta)
-        # # Get the rect for the turrent image compared to the image of the tank
-        # self.turrent_rect = rotated_turrent_image.get_rect(center =(self.rect.width//2, self.rect.height//2))
-        # # update the image to the rotated one
-        # self.turrent_image = rotated_turrent_image
-        
-        # blit the turret on the tank image
 
         if self.color =='red':
             self.check_keys() # only red is influenced by keys
@@ -139,23 +111,38 @@ class Tank(pygame.sprite.Sprite):
             # Recalculate the rect for the rotated turret to position it correctly
             self.turrent_rect = self.turrent_image.get_rect(center =(self.rect.width//2, self.rect.height//2))
             self.image.blit(self.turrent_image, self.turrent_rect)
+        
+        else:
+            self.track_player()
 
-    
+        # check on the explosion status
+        if self.explosion_timer != 0:
+            delta_time = pygame.time.get_ticks() - self.explosion_timer
+            # if we have reached kill time, kill the ship
+            if delta_time >= self.explosion_length:
+                print("killing ship")
+                self.kill()
+                self.speed = 0
+            # ship is in explosion sequence
+            # grow the ship based on time
+            if delta_time < (self.explosion_length/2):
+                # grow the explosion
+                self.orig_image = pygame.transform.scale_by(self.explosion_image, delta_time/1000)
+            else:
+                # shrink the explosion
+                self.orig_image = pygame.transform.scale_by(self.explosion_image, self.explosion_length/1000 - (delta_time - self.explosion_length/2)/1000)
+        
+        self.check_border()
+        # moves our tank at each frame
+        # get x and y components of speed
+        theta_rad = self.deg_to_rad(self.theta + 90)
+        x_dot = cos(theta_rad) * self.speed
+        y_dot = sin(theta_rad) * self.speed
 
-    # def rotate_turret(self, mouse_x, mouse_y):
-    #     if self.color == 'red':
-    #     # Calculate the angle to the mouse cursor
-    #         dx = mouse_x - self.rect.centerx
-    #         dy = mouse_y - self.rect.centery
-    #         angle = degrees(atan2(dy, dx))  # atan2 returns angle in radians, works from -pi to pi
-
-    #         # Rotate the turret by the calculated angle
-    #         self.turrent_image = pygame.transform.rotate(self.orig_turrent, -angle + 90)
-
-    #         # Recalculate the rect for the rotated turret to position it correctly
-    #         self.turrent_rect = self.turrent_image.get_rect(center=self.rect.center)
-    #     else:
-    #         pass
+        self.x += x_dot
+        self.y -= y_dot
+        self.rect.center = (self.x,self.y)
+        
     
     def shoot(self, mouse_x, mouse_y):
        # only shoot if the time has elapsed
@@ -167,3 +154,16 @@ class Tank(pygame.sprite.Sprite):
             b = Bullet(self.screen, self, self.x, self.y, -angle)
             # put the bullet in a group
             self.bullet_group.add(b)
+
+
+    def track_player(self):
+        # this code is in EnemyTank class
+        pass
+
+    def explode(self):
+        # if the timer is already set, do nothing
+        if self.explosion_timer ==0:
+            # start a timer so that it gets killed later
+            self.explosion_timer = pygame.time.get_ticks()
+            print("explosion timer set!")
+            self.speed = 0
