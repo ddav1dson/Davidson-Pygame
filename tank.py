@@ -12,8 +12,10 @@ class Tank(pygame.sprite.Sprite):
         # self.orig_image = pygame.image.load('tiny_tanks/PNG/Tiles/tank_red.png')
         self.color = color
         if color == 'red':
-            self.orig_image = pygame.image.load('tiny_tanks/PNG/Tiles/tankBody_red.png')
-            self.orig_turrent = pygame.image.load('tiny_tanks/PNG/Tiles/tankRed_barrel1.png')
+            self.base_image = pygame.image.load('tiny_tanks/PNG/Tiles/tankBody_red.png')
+            self.orig_image = pygame.transform.scale_by(self.base_image, 1.5)
+            self.base_turrent = pygame.image.load('tiny_tanks/PNG/Tiles/specialbarrel1.png')
+            self.orig_turrent = pygame.transform.scale_by(self.base_turrent, 1.75)
         else:
             self.orig_image = pygame.image.load('tiny_tanks/PNG/Tiles/tank_huge.png')
             self.orig_turrent = pygame.image.load('tiny_tanks/PNG/Tiles/tankRed_barrel1.png')
@@ -32,9 +34,12 @@ class Tank(pygame.sprite.Sprite):
         self.reload_time = 0
         self.reload_wait = 1000
         self.explosion_image = pygame.image.load('tiny_tanks/PNG/Retina/explosion2.png')
-        self.explosion_image = pygame.transform.scale_by(self.explosion_image, 3)
+        self.explosion_image = pygame.transform.scale_by(self.explosion_image, 2)
         self.explosion_timer = 0
         self.explosion_length = 750
+        self.bullet_blast = pygame.image.load('tiny_tanks/PNG/Retina/shotOrange.png')
+        self.orig_blast = self.bullet_blast
+        
 
     def deg_to_rad(self, deg):
         # converts deg to rad
@@ -111,7 +116,6 @@ class Tank(pygame.sprite.Sprite):
             # Recalculate the rect for the rotated turret to position it correctly
             self.turrent_rect = self.turrent_image.get_rect(center =(self.rect.width//2, self.rect.height//2))
             self.image.blit(self.turrent_image, self.turrent_rect)
-        
         else:
             self.track_player()
 
@@ -120,18 +124,18 @@ class Tank(pygame.sprite.Sprite):
             delta_time = pygame.time.get_ticks() - self.explosion_timer
             # if we have reached kill time, kill the ship
             if delta_time >= self.explosion_length:
-                print("killing ship")
                 self.kill()
                 self.speed = 0
-            # ship is in explosion sequence
-            # grow the ship based on time
+            # tank is in explosion sequence
+            # grow the explosion based on time
             if delta_time < (self.explosion_length/2):
                 # grow the explosion
                 self.orig_image = pygame.transform.scale_by(self.explosion_image, delta_time/1000)
+                self.speed = 0
             else:
                 # shrink the explosion
                 self.orig_image = pygame.transform.scale_by(self.explosion_image, self.explosion_length/1000 - (delta_time - self.explosion_length/2)/1000)
-        
+                self.speed = 0
         self.check_border()
         # moves our tank at each frame
         # get x and y components of speed
@@ -158,12 +162,21 @@ class Tank(pygame.sprite.Sprite):
 
     def track_player(self):
         # this code is in EnemyTank class
+        # overwriting checking keyboard and instead tank makes its own decisions
+       # set the speed
+        if self.color == 'enemy':
+            self.speed = 1
+            # get the position of the player (lag)
+            delta_x = self.player.x - self.x
+            delta_y = self.player.y - self.y
+            # if delta is too small do nothing!
+            if delta_x**2 + delta_y**2 > 5:
+                self.theta = degrees(atan2(-delta_y,delta_x))
         pass
-
     def explode(self):
         # if the timer is already set, do nothing
+        self.speed = 0
         if self.explosion_timer ==0:
             # start a timer so that it gets killed later
             self.explosion_timer = pygame.time.get_ticks()
-            print("explosion timer set!")
             self.speed = 0

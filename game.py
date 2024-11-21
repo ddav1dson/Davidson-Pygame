@@ -44,7 +44,8 @@ while running:
     # check for collision
     has_collided = pygame.sprite.collide_rect(player1, enemy1)
     if has_collided:
-        player1.explode()
+        player1.explode() # includes the animation of the explosion
+        player1.speed = 0
     
     # check for bullets hitting tanks
     coll_dict = pygame.sprite.groupcollide(tank_group,bullet_group,0,0)
@@ -60,7 +61,6 @@ while running:
                     # kill the tank
                     b.kill()
                     t.explode()
-                    
 
     # Blit the background to the screen
     screen.blit(background,(0,0))   
