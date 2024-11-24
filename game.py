@@ -16,30 +16,21 @@ score = 0
 # import background
 background = build_background(WIDTH, HEIGHT)
 
-# import decorations
-barrel_top = pygame.image.load('tiny_tanks/PNG/Retina/barrelRust_top.png')
-barrel_side = pygame.image.load('tiny_tanks/PNG/Retina/barrelRust_side.png')
-
-# get the players rect
-player_tank = pygame.image.load('tiny_tanks/PNG/Tiles/tankBody_red.png')
-player_rect = player_tank.get_rect()
-
-# get decorations rectangles
-barrel_top_rect = barrel_top.get_rect()
-barrel_side_rect = barrel_side.get_rect()
-
 # make a sprite group
-tank_group = pygame.sprite.Group()
+enemy_group = pygame.sprite.Group()
+player_group = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
-decoration_group = pygame.sprite.Group()
+all_tanks_group = pygame.sprite.Group()
 
 # create the tanks
 player1 = Tank(screen, 100,200, WIDTH, HEIGHT, bullet_group, color = 'red')
 enemy1 = EnemyTank(player1, screen, 400,200, WIDTH, HEIGHT, bullet_group, color = 'enemy')
 
 # add our sprite to the sprite group
-tank_group.add(player1)
-tank_group.add(enemy1)
+player_group.add(player1)
+enemy_group.add(enemy1)
+all_tanks_group.add(player_group)
+all_tanks_group.add(enemy_group)
 # Render your game here
 
 # make colors
@@ -95,11 +86,12 @@ while running:
     #get the mouse position
     #mouse_x, mouse_y = pygame.mouse.get_pos()
 
-    tank_group.update()
+    player_group.update()
+    enemy_group.update()
     bullet_group.update()
     
     # check for bullets hitting tanks
-    coll_dict = pygame.sprite.groupcollide(tank_group,bullet_group,0,0)
+    coll_dict = pygame.sprite.groupcollide(all_tanks_group,bullet_group,0,0)
     # check and see if a bullet collides with something that is not its mother\
     for t,bs in coll_dict.items():
         # tank is k, bullet list is v
@@ -118,8 +110,9 @@ while running:
     
     # Blit the background to the screen
     screen.blit(background,(0,0))   
-    tank_group.draw(screen)
     
+    player_group.draw(screen)
+    enemy_group.draw(screen)
     bullet_group.draw(screen)
     
     # Draw the score
