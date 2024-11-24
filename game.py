@@ -46,7 +46,7 @@ tank_group.add(enemy1)
 black = (0,0,0)
 white = (255,255,255)
 
-# make font
+# make fonts
 
 # make an instructions screen
 def make_instructions(screen):
