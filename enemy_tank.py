@@ -16,4 +16,4 @@ class EnemyTank(Tank):
         delta_y = self.player.y - self.y
         # if delta is too small do nothing!
         if delta_x**2 + delta_y**2 > 5:
-            self.theta = degrees(atan2(-delta_y,delta_x))
+            self.theta = degrees(atan2(-delta_y,-delta_x))
