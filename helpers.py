@@ -104,7 +104,26 @@ def build_background(WIDTH, HEIGHT):
 
     return background
 
-
+def kill_tanks(tank_group, bullet_group, score, num_tanks):
+        # check for bullets hitting ships
+    coll_dict = pygame.sprite.groupcollide(tank_group,bullet_group,0,0)
+    # check and see if a bullet collides with something that is not its mother
+    for t,bs in coll_dict.items():
+        # tank is k, bullet list is v
+        # check for non empty values
+        if bs:
+            #loop over each bullet check its mom
+            for b in bs:
+                # check if bullet.mom is the tank
+                if b.mom != t:
+                    # kill the tank
+                    b.kill()
+                    t.explode()
+                    # update the score
+                    score[0] += 1
+                    # increase the number of spawned ships by chance
+                    if randint(0,10)<3:
+                        num_tanks[0]+=1
 
 
     

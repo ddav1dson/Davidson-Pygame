@@ -19,7 +19,8 @@ class Tank(pygame.sprite.Sprite):
             self.x = x
             self.y = y
         else:
-            self.orig_image = pygame.image.load('tiny_tanks/PNG/Tiles/tank_huge.png')
+            self.base_image = pygame.image.load('tiny_tanks/PNG/Tiles/tank_huge.png')
+            self.orig_image = pygame.transform.rotate(self.base_image, 180)
             self.orig_turrent = pygame.image.load('tiny_tanks/PNG/Tiles/tankRed_barrel1.png')
             self.x = x
             self.y = y
@@ -36,7 +37,7 @@ class Tank(pygame.sprite.Sprite):
         self.screen = screen
         self.bullet_group = bullet_group
         self.reload_time = 0
-        self.reload_wait = 1000
+        self.reload_wait = 500
         self.explosion_image = pygame.image.load('tiny_tanks/PNG/Retina/explosion2.png')
         self.explosion_image = pygame.transform.scale_by(self.explosion_image, 2)
         self.explosion_timer = 0

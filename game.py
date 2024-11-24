@@ -1,8 +1,9 @@
 import pygame
-from helpers import build_background
+from helpers import build_background, kill_tanks
 from tank import Tank
 from bullet import Bullet
 from enemy_tank import EnemyTank
+from random import randint
 
 # pygame setup
 pygame.init()
@@ -11,7 +12,7 @@ HEIGHT = 720
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 running = True
-score = 0
+score = [0]
 
 # import background
 background = build_background(WIDTH, HEIGHT)
@@ -31,13 +32,24 @@ player_group.add(player1)
 enemy_group.add(enemy1)
 all_tanks_group.add(player_group)
 all_tanks_group.add(enemy_group)
-# Render your game here
 
 # make colors
 black = (0,0,0)
 white = (255,255,255)
 
-# make fonts
+# spawn tanks in after one tank dies
+num_tanks = [0]
+def spawn_tanks(WIDTH, HEIGHT, num_tanks, enemy_group):
+    # check the number of ships, and spawn more as needed
+    # get the number of ships right now
+    n = len(enemy_group)
+    for i in range(n, num_tanks[0]):
+        x = randint(0, WIDTH)
+        y = randint(0, HEIGHT)
+        speed = randint(1, 5)
+        enemy = EnemyTank(player1, screen, x,y, WIDTH, HEIGHT, bullet_group, color='enemy')
+        enemy_group.add(enemy)
+    num_tanks[0] = len(enemy_group)
 
 # make an instructions screen
 def make_instructions(screen):
@@ -62,6 +74,7 @@ def make_instructions(screen):
         font_rect.center = (WIDTH//2, spacing + ii * spacing)
         # blit it to the screen
         screen.blit(font_surf, font_rect)
+
 waiting = 1
 # if we see the spacebar, exit the loop (break)
 while waiting:
@@ -83,43 +96,29 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-    #get the mouse position
-    #mouse_x, mouse_y = pygame.mouse.get_pos()
+    
+
+    spawn_tanks(WIDTH, HEIGHT, num_tanks, enemy_group)
 
     player_group.update()
     enemy_group.update()
     bullet_group.update()
-    
-    # check for bullets hitting tanks
-    coll_dict = pygame.sprite.groupcollide(all_tanks_group,bullet_group,0,0)
-    # check and see if a bullet collides with something that is not its mother\
-    for t,bs in coll_dict.items():
-        # tank is k, bullet list is v
-        # check for non empty values
-        if bs:
-            #loop over each bullet check its mom
-            for b in bs:
-                # check if bullet.mom is the tank
-                if b.mom != t:
-                    # kill the tank
-                    b.kill()
-                    t.explode()
-                    # update the score
-                    score += 1
 
-    
     # Blit the background to the screen
     screen.blit(background,(0,0))   
+
+    
+    # Draw the score
+    font = pygame.font.Font('kenney_fonts\Fonts\Kenney Blocks.ttf', 36)
+    score_text = font.render(f"Score: {score[0]}", True, black)
+    screen.blit(score_text, (10, 10))
     
     player_group.draw(screen)
     enemy_group.draw(screen)
     bullet_group.draw(screen)
-    
-    # Draw the score
-    font = pygame.font.Font('kenney_fonts\Fonts\Kenney Blocks.ttf', 36)
-    score_text = font.render(f"Score: {score}", True, black)
-    screen.blit(score_text, (10, 10))
-    
+
+    kill_tanks(enemy_group, bullet_group, score, num_tanks)
+
     # flip() the display to put your work on screen
     pygame.display.flip()
 
