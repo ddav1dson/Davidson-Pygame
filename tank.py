@@ -40,6 +40,7 @@ class Tank(pygame.sprite.Sprite):
         self.bullet_blast = pygame.image.load('tiny_tanks/PNG/Retina/shotOrange.png')
         self.orig_blast = self.bullet_blast
         
+        
 
     def deg_to_rad(self, deg):
         # converts deg to rad
@@ -163,15 +164,15 @@ class Tank(pygame.sprite.Sprite):
     def track_player(self):
         # this code is in EnemyTank class
         # overwriting checking keyboard and instead tank makes its own decisions
-       # set the speed
-        if self.color == 'enemy':
-            self.speed = 1
-            # get the position of the player (lag)
-            delta_x = self.player.x - self.x
-            delta_y = self.player.y - self.y
-            # if delta is too small do nothing!
-            if delta_x**2 + delta_y**2 > 5:
-                self.theta = degrees(atan2(-delta_y,delta_x))
+        #set the speed
+        # if self.color == 'enemy':
+        #     self.speed = 1
+        #     # get the position of the player (lag)
+        #     delta_x = self.player.x - self.x
+        #     delta_y = self.player.y - self.y
+        #     # if delta is too small do nothing!
+        #     if delta_x**2 + delta_y**2 > 5:
+        #         self.theta = degrees(atan2(-delta_y,delta_x))
         pass
     def explode(self):
         # if the timer is already set, do nothing

@@ -44,7 +44,7 @@ while running:
     # check for collision
     has_collided = pygame.sprite.collide_rect(player1, enemy1)
     if has_collided:
-        player1.explode() # includes the animation of the explosion
+        #player1.explode() # includes the animation of the explosion
         player1.speed = 0
     
     # check for bullets hitting tanks

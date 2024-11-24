@@ -1,4 +1,5 @@
 import pygame
+from random import randint
 
 def build_background(WIDTH, HEIGHT):
     # Create the Background
@@ -26,7 +27,9 @@ def build_background(WIDTH, HEIGHT):
     brown_tree_small = pygame.image.load('tiny_tanks/PNG/Retina/treeBrown_small.png')
     barrel_top = pygame.image.load('tiny_tanks/PNG/Retina/barrelRust_top.png')
     barrel_side = pygame.image.load('tiny_tanks/PNG/Retina/barrelRust_side.png')
-    
+    green_twigs = pygame.image.load('tiny_tanks/PNG/Retina/treeGreen_twigs.png')
+    brown_twigs = pygame.image.load('tiny_tanks/PNG/Retina/treeBrown_twigs.png')
+
     # Create the background
     # Get to the tile_size
     TILE_SIZE = grass.get_width()
@@ -48,7 +51,34 @@ def build_background(WIDTH, HEIGHT):
             background.blit(grass_road_horizontal, (x,360))
         
     background.blit(grass_and_sand_road_horizontal, (640,360))
+
+    #add random trees
+    # add some random trees and twigs
+    num_trees = 2
+    # loop over num trees
+    for i in range(num_trees):
+        # generate coords
+        coords = (randint(WIDTH//2, WIDTH), randint(0,HEIGHT//2))
+        # blit the rock on the bg
+        background.blit(green_twigs, coords)
     
+    for i in range(num_trees):
+        # generate coords
+        coords = (randint(WIDTH//2, WIDTH), randint(0,HEIGHT//2))
+        # blit the rock on the bg
+        background.blit(green_tree_large, coords)
+
+    for i in range(num_trees):
+        # generate coords
+        coords = (randint(0, WIDTH//2), randint(HEIGHT//2,HEIGHT))
+        # blit the rock on the bg
+        background.blit(brown_twigs, coords)
+
+    for i in range(num_trees):
+        # generate coords
+        coords = (randint(0, WIDTH//2), randint(HEIGHT//2,HEIGHT))
+        # blit the rock on the bg
+        background.blit(brown_tree_large, coords)
     #blit background decorations
     background.blit(rotated_vertical_sandbag, (900,500))
     background.blit(rotated_right_sandbag, (900,427))
@@ -56,10 +86,15 @@ def build_background(WIDTH, HEIGHT):
     background.blit(wood_barricade, (WIDTH//2,0))
     background.blit(wood_barricade, (WIDTH//2,55))
     background.blit(wood_barricade, (WIDTH//2,110))
-    background.blit(green_tree_large, (900,50))
-    background.blit(brown_tree_large, (100,525))
-    background.blit(green_tree_small, (950,175))
     background.blit(barrel_top, (180,160))
     background.blit(barrel_top, (210,200))
-    background.blit(barrel_side, (210,250))
+    background.blit(barrel_side, (215,250))
+    
+    #make decorations obstacles
+    barrel_top_rect = barrel_top.get_rect()
+
+
+
     return background
+
+    
