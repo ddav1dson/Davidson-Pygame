@@ -5,8 +5,8 @@ from bullet import Bullet
 class Tank(pygame.sprite.Sprite):
     def __init__(self, screen, x, y, WIDTH, HEIGHT, bullet_group, theta=180, color='red'):
         pygame.sprite.Sprite.__init__(self)
-        self.x = x
-        self.y = y
+        # self.x = x
+        # self.y = y
         self.speed = 0
         self.theta = theta # degrees
         # self.orig_image = pygame.image.load('tiny_tanks/PNG/Tiles/tank_red.png')
@@ -16,9 +16,13 @@ class Tank(pygame.sprite.Sprite):
             self.orig_image = pygame.transform.scale_by(self.base_image, 1.5)
             self.base_turrent = pygame.image.load('tiny_tanks/PNG/Tiles/specialbarrel1.png')
             self.orig_turrent = pygame.transform.scale_by(self.base_turrent, 1.75)
+            self.x = x
+            self.y = y
         else:
             self.orig_image = pygame.image.load('tiny_tanks/PNG/Tiles/tank_huge.png')
             self.orig_turrent = pygame.image.load('tiny_tanks/PNG/Tiles/tankRed_barrel1.png')
+            self.x = x
+            self.y = y
         self.image = self.orig_image
         self.turrent_image = self.orig_turrent
         self.rect = self.image.get_rect()
@@ -39,6 +43,12 @@ class Tank(pygame.sprite.Sprite):
         self.explosion_length = 750
         self.bullet_blast = pygame.image.load('tiny_tanks/PNG/Retina/shotOrange.png')
         self.orig_blast = self.bullet_blast
+        # decorations
+        self.barrel_top = pygame.image.load('tiny_tanks/PNG/Retina/barrelRust_top.png')
+        self.barrel_side = pygame.image.load('tiny_tanks/PNG/Retina/barrelRust_side.png')
+        # rectangles of decorations
+        self.barrel_top_rect = self.barrel_top.get_rect()
+        self.barrel_side_rect = self.barrel_side.get_rect()
         
         
 
@@ -138,6 +148,7 @@ class Tank(pygame.sprite.Sprite):
                 self.orig_image = pygame.transform.scale_by(self.explosion_image, self.explosion_length/1000 - (delta_time - self.explosion_length/2)/1000)
                 self.speed = 0
         self.check_border()
+        self.check_collision()
         # moves our tank at each frame
         # get x and y components of speed
         theta_rad = self.deg_to_rad(self.theta + 90)
@@ -163,21 +174,20 @@ class Tank(pygame.sprite.Sprite):
 
     def track_player(self):
         # this code is in EnemyTank class
-        # overwriting checking keyboard and instead tank makes its own decisions
-        #set the speed
-        # if self.color == 'enemy':
-        #     self.speed = 1
-        #     # get the position of the player (lag)
-        #     delta_x = self.player.x - self.x
-        #     delta_y = self.player.y - self.y
-        #     # if delta is too small do nothing!
-        #     if delta_x**2 + delta_y**2 > 5:
-        #         self.theta = degrees(atan2(-delta_y,delta_x))
         pass
+    
     def explode(self):
         # if the timer is already set, do nothing
         self.speed = 0
         if self.explosion_timer ==0:
             # start a timer so that it gets killed later
             self.explosion_timer = pygame.time.get_ticks()
+            self.speed = 0
+
+    def check_collision(self):
+        if self.rect.colliderect(self.barrel_top_rect):
+            print(f"collision detected1")
+            self.speed = 0
+        if self.rect.colliderect(self.barrel_side_rect):
+            print(f"collision detected2")
             self.speed = 0

@@ -6,6 +6,10 @@ def build_background(WIDTH, HEIGHT):
     background = pygame.Surface((WIDTH,HEIGHT))
     background.fill((255,0,0))
 
+    # get the players rect
+    player_tank = pygame.image.load('tiny_tanks/PNG/Tiles/tankBody_red.png')
+    player_rect = player_tank.get_rect()
+
     # Load the Tiles
     grass = pygame.image.load('tiny_tanks/PNG/Tiles/tileGrass1.png')
     sand = pygame.image.load('tiny_tanks/PNG/Tiles/tileSand1.png')
@@ -15,6 +19,7 @@ def build_background(WIDTH, HEIGHT):
     grass_road_horizontal = pygame.image.load('tiny_tanks/PNG/Tiles/tileGrass_roadEast.png')
     grass_road_vertical = pygame.image.load('tiny_tanks/PNG/Tiles/tileGrass_roadNorth.png')
     grass_and_sand_road_horizontal = pygame.image.load('tiny_tanks/PNG/Tiles/tileGrass_roadTransitionW.png')
+    
     sandbag = pygame.image.load('tiny_tanks/PNG/Retina/sandbagBrown.png')
     rotated_vertical_sandbag = pygame.transform.rotate(sandbag, 90)
     rotated_right_sandbag = pygame.transform.rotate(sandbag, 45)
@@ -93,8 +98,13 @@ def build_background(WIDTH, HEIGHT):
     #make decorations obstacles
     barrel_top_rect = barrel_top.get_rect()
 
-
+    if player_rect.colliderect(barrel_top_rect):
+        print(f"collision detected11")
+        player_rect.x -= 1
 
     return background
+
+
+
 
     
