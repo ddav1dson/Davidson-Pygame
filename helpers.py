@@ -1,5 +1,19 @@
 import pygame
 from random import randint
+from enemy_tank import EnemyTank
+from tank import Tank
+
+pygame.init()
+WIDTH = 1280
+HEIGHT = 720
+black = (0,0,0)
+white = (255,255,255)
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
+enemy_group = pygame.sprite.Group()
+player_group = pygame.sprite.Group()
+bullet_group = pygame.sprite.Group()
+all_tanks_group = pygame.sprite.Group()
 
 def build_background(WIDTH, HEIGHT):
     # Create the Background
@@ -65,19 +79,7 @@ def build_background(WIDTH, HEIGHT):
         # generate coords
         coords = (randint(WIDTH//2, WIDTH), randint(0,HEIGHT//2))
         # blit the rock on the bg
-        background.blit(green_twigs, coords)
-    
-    for i in range(num_trees):
-        # generate coords
-        coords = (randint(WIDTH//2, WIDTH), randint(0,HEIGHT//2))
-        # blit the rock on the bg
         background.blit(green_tree_large, coords)
-
-    for i in range(num_trees):
-        # generate coords
-        coords = (randint(0, WIDTH//2), randint(HEIGHT//2,HEIGHT))
-        # blit the rock on the bg
-        background.blit(brown_twigs, coords)
 
     for i in range(num_trees):
         # generate coords
@@ -124,6 +126,30 @@ def kill_tanks(tank_group, bullet_group, score, num_tanks):
                     # increase the number of spawned ships by chance
                     if randint(0,10)<3:
                         num_tanks[0]+=1
+
+# make an instructions screen
+def make_instructions(screen):
+    # black screen
+    screen.fill(black)
+    instructions = [
+        'Tank Busters',
+        'Use W, A, S, D to move your tank',
+        'Press Spacebar to shoot your cannon',
+        '',
+        '**Press P To Play**'
+    ]
+    # make an instruction font
+    i_font = pygame.font.Font('kenney_fonts\Fonts\Kenney Blocks.ttf',size=40)
+    spacing = 80
+    # render (make surface) for each instruction
+    for ii in range(len(instructions)):
+        # render the font
+        font_surf = i_font.render(instructions[ii], True, white)
+        # get a rect
+        font_rect = font_surf.get_rect()
+        font_rect.center = (WIDTH//2, spacing + ii * spacing)
+        # blit it to the screen
+        screen.blit(font_surf, font_rect)
 
 
     

@@ -1,5 +1,5 @@
 import pygame
-from helpers import build_background, kill_tanks
+from helpers import build_background, kill_tanks, make_instructions
 from tank import Tank
 from bullet import Bullet
 from enemy_tank import EnemyTank
@@ -51,30 +51,6 @@ def spawn_tanks(WIDTH, HEIGHT, num_tanks, enemy_group):
         enemy_group.add(enemy)
     num_tanks[0] = len(enemy_group)
 
-# make an instructions screen
-def make_instructions(screen):
-    # black screen
-    screen.fill(black)
-    instructions = [
-        'Tank Busters',
-        'Use W, A, S, D to move your tank',
-        'Press Spacebar to shoot your cannon',
-        '',
-        '**Press P To Play**'
-    ]
-    # make an instruction font
-    i_font = pygame.font.Font('kenney_fonts\Fonts\Kenney Blocks.ttf',size=40)
-    spacing = 80
-    # render (make surface) for each instruction
-    for ii in range(len(instructions)):
-        # render the font
-        font_surf = i_font.render(instructions[ii], True, white)
-        # get a rect
-        font_rect = font_surf.get_rect()
-        font_rect.center = (WIDTH//2, spacing + ii * spacing)
-        # blit it to the screen
-        screen.blit(font_surf, font_rect)
-
 waiting = 1
 # if we see the spacebar, exit the loop (break)
 while waiting:
@@ -107,6 +83,8 @@ while running:
     # Blit the background to the screen
     screen.blit(background,(0,0))   
 
+    player1.check_obstacle()
+    enemy1.check_obstacle()
     
     # Draw the score
     font = pygame.font.Font('kenney_fonts\Fonts\Kenney Blocks.ttf', 36)

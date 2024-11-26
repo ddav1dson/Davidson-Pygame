@@ -2,6 +2,12 @@ from math import cos, sin, pi, degrees, radians, atan2
 import pygame
 from bullet import Bullet
 
+# pygame setup
+pygame.init()
+WIDTH = 1280
+HEIGHT = 720
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+clock = pygame.time.Clock()
 class Tank(pygame.sprite.Sprite):
     def __init__(self, screen, x, y, WIDTH, HEIGHT, bullet_group, theta=180, color='red'):
         pygame.sprite.Sprite.__init__(self)
@@ -50,7 +56,8 @@ class Tank(pygame.sprite.Sprite):
         # rectangles of decorations
         self.barrel_top_rect = self.barrel_top.get_rect()
         self.barrel_side_rect = self.barrel_side.get_rect()
-        
+        # self.initial_x = self.x
+        # self.initial_y = self.y
         
 
     def deg_to_rad(self, deg):
@@ -156,8 +163,13 @@ class Tank(pygame.sprite.Sprite):
         x_dot = cos(theta_rad) * self.speed
         y_dot = sin(theta_rad) * self.speed
 
+        self.initial_x = self.x
+        self.initial_y = self.y
         self.x += x_dot
         self.y -= y_dot
+        #check r,g,b value for obstacle
+        #if there is an obstacle, set self.x,y back to inital x,y
+        #self.check_obstacle()
         self.rect.center = (self.x,self.y)
         
     
@@ -192,3 +204,15 @@ class Tank(pygame.sprite.Sprite):
         if self.rect.colliderect(self.barrel_side_rect):
             print(f"collision detected2")
             self.speed = 0
+
+    def check_obstacle(self):
+        r,g,b,_ = screen.get_at(self.rect.center)
+        print(r)
+
+        # check the r g and b to see if we are hitting an obstacles
+        if r in range(50,75) or r in range(120, 245) and g in range(137,225) and b in range(100,180):
+            pass
+        else:
+            self.speed=0
+            self.x = self.initial_x
+            self.y = self.initial_y 
