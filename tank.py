@@ -167,9 +167,7 @@ class Tank(pygame.sprite.Sprite):
         self.initial_y = self.y
         self.x += x_dot
         self.y -= y_dot
-        #check r,g,b value for obstacle
-        #if there is an obstacle, set self.x,y back to inital x,y
-        #self.check_obstacle()
+        
         self.rect.center = (self.x,self.y)
         
     
@@ -206,6 +204,7 @@ class Tank(pygame.sprite.Sprite):
             self.speed = 0
 
     def check_obstacle(self):
+        #check r,g,b value for obstacle
         r,g,b,_ = screen.get_at(self.rect.center)
         print(r)
 
@@ -216,3 +215,5 @@ class Tank(pygame.sprite.Sprite):
             self.speed=0
             self.x = self.initial_x
             self.y = self.initial_y 
+            if self.color == 'enemy':
+                self.explode()

@@ -49,6 +49,7 @@ def spawn_tanks(WIDTH, HEIGHT, num_tanks, enemy_group):
         speed = randint(1, 5)
         enemy = EnemyTank(player1, screen, x,y, WIDTH, HEIGHT, bullet_group, color='enemy')
         enemy_group.add(enemy)
+        
     num_tanks[0] = len(enemy_group)
 
 waiting = 1
@@ -84,7 +85,8 @@ while running:
     screen.blit(background,(0,0))   
 
     player1.check_obstacle()
-    enemy1.check_obstacle()
+    for enemy in enemy_group:
+        enemy.check_obstacle()
     
     # Draw the score
     font = pygame.font.Font('kenney_fonts\Fonts\Kenney Blocks.ttf', 36)
