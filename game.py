@@ -84,6 +84,7 @@ while running:
     # Blit the background to the screen
     screen.blit(background,(0,0))   
 
+    # check r,g,b to see if either player or enemy hits an obstacle
     player1.check_obstacle()
     for enemy in enemy_group:
         enemy.check_obstacle()

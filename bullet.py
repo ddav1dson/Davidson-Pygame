@@ -1,5 +1,12 @@
 import pygame
 from math import sin, cos, radians
+
+# pygame setup
+pygame.init()
+WIDTH = 1280
+HEIGHT = 720
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, screen,mom, x,y,theta,speed = 10):
         pygame.sprite.Sprite.__init__(self)
@@ -23,6 +30,10 @@ class Bullet(pygame.sprite.Sprite):
         dx = self.speed * cos(radians(self.theta))
         dy = self.speed * sin(radians(self.theta))
 
+        # set initial position before moving
+        self.initial_x = self.x
+        self.initial_y = self.y
+
         self.x += dx
         self.y -= dy
         # update the rect
@@ -41,3 +52,13 @@ class Bullet(pygame.sprite.Sprite):
         if not self.screen_rect.contains(self.rect):
             # remove the bullet
             self.kill()
+
+        #check r,g,b value for obstacle
+        r,g,b,_ = screen.get_at(self.rect.center)
+
+        # check the r g and b to see if we are hitting an obstacles
+        if r in range(50,92) or r in range(120, 245) and g in range (70,80) or range(137,225) and b in range (55,65) or range(100,180):
+            pass
+        else:
+            self.kill()
+            

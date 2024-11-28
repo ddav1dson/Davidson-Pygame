@@ -11,8 +11,6 @@ clock = pygame.time.Clock()
 class Tank(pygame.sprite.Sprite):
     def __init__(self, screen, x, y, WIDTH, HEIGHT, bullet_group, theta=180, color='red'):
         pygame.sprite.Sprite.__init__(self)
-        # self.x = x
-        # self.y = y
         self.speed = 0
         self.theta = theta # degrees
         # self.orig_image = pygame.image.load('tiny_tanks/PNG/Tiles/tank_red.png')
@@ -44,6 +42,7 @@ class Tank(pygame.sprite.Sprite):
         self.bullet_group = bullet_group
         self.reload_time = 0
         self.reload_wait = 500
+        self.enemy_reload_wait = 4000
         self.explosion_image = pygame.image.load('tiny_tanks/PNG/Retina/explosion2.png')
         self.explosion_image = pygame.transform.scale_by(self.explosion_image, 2)
         self.explosion_timer = 0
@@ -56,8 +55,6 @@ class Tank(pygame.sprite.Sprite):
         # rectangles of decorations
         self.barrel_top_rect = self.barrel_top.get_rect()
         self.barrel_side_rect = self.barrel_side.get_rect()
-        # self.initial_x = self.x
-        # self.initial_y = self.y
         
 
     def deg_to_rad(self, deg):
@@ -137,6 +134,8 @@ class Tank(pygame.sprite.Sprite):
             self.image.blit(self.turrent_image, self.turrent_rect)
         else:
             self.track_player()
+            if pygame.time.get_ticks() - self.reload_time > self.reload_wait:
+                self.shoot(mouse_x, mouse_y)
 
         # check on the explosion status
         if self.explosion_timer != 0:
@@ -156,7 +155,6 @@ class Tank(pygame.sprite.Sprite):
                 self.orig_image = pygame.transform.scale_by(self.explosion_image, self.explosion_length/1000 - (delta_time - self.explosion_length/2)/1000)
                 self.speed = 0
         self.check_border()
-        self.check_collision()
         # moves our tank at each frame
         # get x and y components of speed
         theta_rad = self.deg_to_rad(self.theta + 90)
@@ -173,14 +171,22 @@ class Tank(pygame.sprite.Sprite):
     
     def shoot(self, mouse_x, mouse_y):
        # only shoot if the time has elapsed
-        if pygame.time.get_ticks() - self.reload_time > self.reload_wait:
-            self.reload_time = pygame.time.get_ticks()
-            dx = mouse_x - self.rect.centerx
-            dy = mouse_y - self.rect.centery
-            angle = degrees(atan2(dy, dx))  # atan2 returns angle in radians
-            b = Bullet(self.screen, self, self.x, self.y, -angle)
-            # put the bullet in a group
-            self.bullet_group.add(b)
+        if self.color == 'red':
+            if pygame.time.get_ticks() - self.reload_time > self.reload_wait:
+                self.reload_time = pygame.time.get_ticks()
+                dx = mouse_x - self.rect.centerx
+                dy = mouse_y - self.rect.centery
+                angle = degrees(atan2(dy, dx))  # atan2 returns angle in radians
+                b = Bullet(self.screen, self, self.x, self.y, -angle)
+                # put the bullet in a group
+                self.bullet_group.add(b)
+        elif self.color == 'enemy':
+            if pygame.time.get_ticks() -self.reload_time > self.enemy_reload_wait:
+                self.reload_time = pygame.time.get_ticks()
+                angle = self.theta + 90
+                b = Bullet(self.screen, self, self.x, self.y, angle)
+                # put the bullet in a group
+                self.bullet_group.add(b)
 
 
     def track_player(self):
@@ -195,18 +201,9 @@ class Tank(pygame.sprite.Sprite):
             self.explosion_timer = pygame.time.get_ticks()
             self.speed = 0
 
-    def check_collision(self):
-        if self.rect.colliderect(self.barrel_top_rect):
-            print(f"collision detected1")
-            self.speed = 0
-        if self.rect.colliderect(self.barrel_side_rect):
-            print(f"collision detected2")
-            self.speed = 0
-
     def check_obstacle(self):
         #check r,g,b value for obstacle
         r,g,b,_ = screen.get_at(self.rect.center)
-        print(r)
 
         # check the r g and b to see if we are hitting an obstacles
         if r in range(50,75) or r in range(120, 245) and g in range(137,225) and b in range(100,180):

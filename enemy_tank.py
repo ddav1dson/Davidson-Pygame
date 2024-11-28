@@ -1,6 +1,7 @@
 import pygame
 from tank import Tank
 from math import degrees, atan2, radians, cos, sin
+from bullet import Bullet
 
 # pygame setup
 pygame.init()
@@ -24,17 +25,3 @@ class EnemyTank(Tank):
         # if delta is too small do nothing!
         if delta_x**2 + delta_y**2 > 5:
             self.theta = degrees(atan2(-delta_x,-delta_y))
-    
-    def check_obstacle(self):
-        #check r,g,b value for obstacle
-        r,g,b,_ = screen.get_at(self.rect.center)
-        print(r)
-
-        # check the r g and b to see if we are hitting an obstacles
-        if r in range(50,75) or r in range(120, 245) and g in range(137,225) and b in range(100,180):
-            pass
-        else:
-            self.speed=0
-            self.x = self.initial_x
-            self.y = self.initial_y 
-            self.explode()
