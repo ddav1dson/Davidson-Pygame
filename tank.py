@@ -1,6 +1,7 @@
 from math import cos, sin, pi, degrees, radians, atan2
 import pygame
 from bullet import Bullet
+from random import randint
 
 # pygame setup
 pygame.init()
@@ -140,7 +141,7 @@ class Tank(pygame.sprite.Sprite):
         # check on the explosion status
         if self.explosion_timer != 0:
             delta_time = pygame.time.get_ticks() - self.explosion_timer
-            # if we have reached kill time, kill the ship
+            # if we have reached kill time, kill the tank
             if delta_time >= self.explosion_length:
                 self.kill()
                 self.speed = 0
@@ -180,6 +181,7 @@ class Tank(pygame.sprite.Sprite):
                 b = Bullet(self.screen, self, self.x, self.y, -angle)
                 # put the bullet in a group
                 self.bullet_group.add(b)
+                
         elif self.color == 'enemy':
             if pygame.time.get_ticks() -self.reload_time > self.enemy_reload_wait:
                 self.reload_time = pygame.time.get_ticks()
@@ -187,6 +189,8 @@ class Tank(pygame.sprite.Sprite):
                 b = Bullet(self.screen, self, self.x, self.y, angle)
                 # put the bullet in a group
                 self.bullet_group.add(b)
+                r,g,b,_ = screen.get_at(b.rect.center)
+
 
 
     def track_player(self):
@@ -214,3 +218,24 @@ class Tank(pygame.sprite.Sprite):
             self.y = self.initial_y 
             if self.color == 'enemy':
                 self.explode()
+
+    def kill_tanks(tank_group, bullet_group, score, num_tanks):
+        # check for bullets hitting ships
+        coll_dict = pygame.sprite.groupcollide(tank_group,bullet_group,0,0)
+        # check and see if a bullet collides with something that is not its mother
+        for t,bs in coll_dict.items():
+            # tank is k, bullet list is v
+            # check for non empty values
+            if bs:
+                #loop over each bullet check its mom
+                for b in bs:
+                    # check if bullet.mom is the tank
+                    if b.mom != t:
+                        # kill the tank
+                        b.kill()
+                        t.explode()
+                        # update the score
+                        score[0] += 1
+                        # increase the number of spawned ships by chance
+                        if randint(0,10)<3:
+                            num_tanks[0]+=1

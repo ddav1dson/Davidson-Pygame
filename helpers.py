@@ -8,12 +8,8 @@ WIDTH = 1280
 HEIGHT = 720
 black = (0,0,0)
 white = (255,255,255)
+red = (255,0,0)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-
-enemy_group = pygame.sprite.Group()
-player_group = pygame.sprite.Group()
-bullet_group = pygame.sprite.Group()
-all_tanks_group = pygame.sprite.Group()
 
 def build_background(WIDTH, HEIGHT):
     # Create the Background
@@ -96,13 +92,6 @@ def build_background(WIDTH, HEIGHT):
     background.blit(barrel_top, (180,160))
     background.blit(barrel_top, (210,200))
     background.blit(barrel_side, (215,250))
-    
-    #make decorations obstacles
-    barrel_top_rect = barrel_top.get_rect()
-
-    if player_rect.colliderect(barrel_top_rect):
-        print(f"collision detected11")
-        player_rect.x -= 1
 
     return background
 
@@ -132,11 +121,13 @@ def make_instructions(screen):
     # black screen
     screen.fill(black)
     instructions = [
+        '',
         'Tank Busters',
         'Use W, A, S, D to move your tank',
         'Press Spacebar to shoot your cannon',
-        '',
-        '**Press P To Play**'
+        'Aim with the mouse',
+        'Enemies can spawn anywhere so stay mobile!',
+        '**Press Any Key To Play**'
     ]
     # make an instruction font
     i_font = pygame.font.Font('kenney_fonts\Fonts\Kenney Blocks.ttf',size=40)
@@ -151,5 +142,25 @@ def make_instructions(screen):
         # blit it to the screen
         screen.blit(font_surf, font_rect)
 
-
+def make_death_screen(screen):
+    # black screen
+    screen.fill(black)
+    instructions = [
+        '',
+        '',
+        '',
+        'Your tank was busted!'
+    ]
+    # make an instruction font
+    i_font = pygame.font.Font('kenney_fonts\Fonts\Kenney Blocks.ttf',size=60)
+    spacing = 80
+    # render (make surface) for each instruction
+    for ii in range(len(instructions)):
+        # render the font
+        font_surf = i_font.render(instructions[ii], True, red)
+        # get a rect
+        font_rect = font_surf.get_rect()
+        font_rect.center = (WIDTH//2, spacing + ii * spacing)
+        # blit it to the screen
+        screen.blit(font_surf, font_rect)
     

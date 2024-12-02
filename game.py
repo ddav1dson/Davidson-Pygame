@@ -1,5 +1,5 @@
 import pygame
-from helpers import build_background, kill_tanks, make_instructions
+from helpers import build_background, make_instructions
 from tank import Tank
 from bullet import Bullet
 from enemy_tank import EnemyTank
@@ -25,7 +25,7 @@ all_tanks_group = pygame.sprite.Group()
 
 # create the tanks
 player1 = Tank(screen, 100,200, WIDTH, HEIGHT, bullet_group, color = 'red')
-enemy1 = EnemyTank(player1, screen, 400,200, WIDTH, HEIGHT, bullet_group, color = 'enemy')
+enemy1 = EnemyTank(player1, screen, 800,HEIGHT//2, WIDTH, HEIGHT, bullet_group, color = 'enemy')
 
 # add our sprite to the sprite group
 player_group.add(player1)
@@ -84,10 +84,12 @@ while running:
     # Blit the background to the screen
     screen.blit(background,(0,0))   
 
+    # right now only the background has been created
     # check r,g,b to see if either player or enemy hits an obstacle
     player1.check_obstacle()
     for enemy in enemy_group:
         enemy.check_obstacle()
+    [bullet.check_obstacle() for bullet in bullet_group]
     
     # Draw the score
     font = pygame.font.Font('kenney_fonts\Fonts\Kenney Blocks.ttf', 36)
@@ -98,8 +100,8 @@ while running:
     enemy_group.draw(screen)
     bullet_group.draw(screen)
 
-    kill_tanks(enemy_group, bullet_group, score, num_tanks)
-
+    Tank.kill_tanks(enemy_group, bullet_group, score, num_tanks)
+    Tank.kill_tanks(player_group, bullet_group, score, num_tanks)
     # flip() the display to put your work on screen
     pygame.display.flip()
 

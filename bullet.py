@@ -8,7 +8,7 @@ HEIGHT = 720
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, screen,mom, x,y,theta,speed = 10):
+    def __init__(self, screen,mom, x,y,theta,speed = 7):
         pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
@@ -55,9 +55,19 @@ class Bullet(pygame.sprite.Sprite):
 
         #check r,g,b value for obstacle
         r,g,b,_ = screen.get_at(self.rect.center)
+        # check the r g and b to see if we are hitting an obstacles
+        if r in range(50,92) or r in range(140, 245) and g in range (70,80) or range(137,225) and b in range (55,65) or range(100,180):
+            pass
+        else:
+            self.kill()
+    
+    # kill bullets when they hit an obstacle.
+    def check_obstacle(self):
+        #check r,g,b value for obstacle
+        r,g,b,_ = screen.get_at(self.rect.center)
 
         # check the r g and b to see if we are hitting an obstacles
-        if r in range(50,92) or r in range(120, 245) and g in range (70,80) or range(137,225) and b in range (55,65) or range(100,180):
+        if r in range(50,75) or r in range(120, 245) and g in range(137,225) and b in range(100,180):
             pass
         else:
             self.kill()
