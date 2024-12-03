@@ -142,7 +142,7 @@ def make_instructions(screen):
         # blit it to the screen
         screen.blit(font_surf, font_rect)
 
-def make_death_screen(screen):
+def game_over(screen):
     # black screen
     screen.fill(black)
     instructions = [

@@ -1,5 +1,5 @@
 import pygame
-from helpers import build_background, make_instructions
+from helpers import build_background, make_instructions, game_over
 from tank import Tank
 from bullet import Bullet
 from enemy_tank import EnemyTank
@@ -89,6 +89,7 @@ while running:
     player1.check_obstacle()
     for enemy in enemy_group:
         enemy.check_obstacle()
+    # check r,g,b if any bullets hit an obstacle
     [bullet.check_obstacle() for bullet in bullet_group]
     
     # Draw the score
@@ -96,15 +97,38 @@ while running:
     score_text = font.render(f"Score: {score[0]}", True, black)
     screen.blit(score_text, (10, 10))
     
+    #Draw the player, enemies and bullets
     player_group.draw(screen)
     enemy_group.draw(screen)
     bullet_group.draw(screen)
 
     Tank.kill_tanks(enemy_group, bullet_group, score, num_tanks)
     Tank.kill_tanks(player_group, bullet_group, score, num_tanks)
+        
+    #game over screen if player dies
+
+    if not player1.alive():
+        running = False 
+        
+    
     # flip() the display to put your work on screen
     pygame.display.flip()
 
     clock.tick(60)  # limits FPS to 60
+
+
+#pygame.quit()
+
+death = 1
+# if we see the spacebar, exit the loop (break)
+while death:
+# pygame.QUIT event means the user clicked X to close your window
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            death = 0
+
+    
+    game_over(screen)
+    pygame.display.flip()
 
 pygame.quit()

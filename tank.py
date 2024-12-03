@@ -237,5 +237,5 @@ class Tank(pygame.sprite.Sprite):
                         # update the score
                         score[0] += 1
                         # increase the number of spawned ships by chance
-                        if randint(0,10)<3:
+                        if randint(0,15)<3:
                             num_tanks[0]+=1
